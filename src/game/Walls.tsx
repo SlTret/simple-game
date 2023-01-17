@@ -12,8 +12,8 @@ export class Walls {
 
         for (let i = 0; i < this.num; ++i) {
 
-            let topHeight = 50 + this.getRandomInt(250)
-            let bottomHeight = this.height - topHeight - 100 - this.getRandomInt(100)
+            let topHeight = 50 + this.getRandomInt(200)
+            let bottomHeight = this.height - topHeight - 150 - this.getRandomInt(100)
 
             let posX = this.startPosX + 300 * i;
             let posY = this.height - bottomHeight

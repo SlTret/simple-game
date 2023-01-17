@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react'
+import { gameModel } from '../Game';
 
 export type Update = (context: CanvasRenderingContext2D, frameCount: number) => void
 
@@ -39,7 +40,11 @@ const useCanvas = (update: Update) => {
         throw new Error("No context");
 
       animationFrameId = window.requestAnimationFrame(render);
-      resizeCanvasToDisplaySize(context);
+      
+      if(gameModel.gameState !== "PAUSE") {
+        resizeCanvasToDisplaySize(context);
+      }
+      
       frameCount++
       update(context, frameCount)
     }

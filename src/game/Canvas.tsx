@@ -1,5 +1,5 @@
 import React, { memo } from 'react'
-import {Update, useCanvas} from './useCanvas'
+import { Update, useCanvas } from './hooks/useCanvas'
 
 interface CanvasProps extends React.HTMLProps<HTMLCanvasElement> {
     update: Update

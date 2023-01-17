@@ -1,10 +1,11 @@
 import { Button } from '@mui/material';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Canvas from './Canvas';
 import { Rect, Sprite } from './GameObjects';
+import { useControls } from './hooks/useControls';
 import { Walls } from './Walls';
 
-export type GameState = "START" | "RUN" | "PAUSE" | "END" 
+export type GameState = "START" | "RUN" | "PAUSE" | "END"
 
 export class GameModel {
     public gameState = "START"
@@ -15,43 +16,12 @@ export const gameModel: GameModel = new GameModel();
 const Game = () => {
 
     const player: Sprite = useMemo(() => new Sprite(100, 100), []);
-    const walls: Walls = new Walls();
+    const walls: Walls = useMemo(() => new Walls(), []);
     const [gameState, setGameState] = useState<GameState>("START");
 
     gameModel.gameState = gameState
 
-    document.onkeydown = ((e: KeyboardEvent) => {
-        if (e.key == "ArrowLeft") {
-            player.vx = - 2
-        }
-        else if (e.key == "ArrowRight") {
-            player.vx = 2
-        }
-        else if (e.key == "ArrowUp") {
-            player.vy = - 10
-        }
-        else if (e.key == "ArrowDown") {
-            player.vy = 2
-        }
-        else if (e.key == " ") {
-
-            switch (gameState) {
-                case "RUN": {
-                    setGameState("PAUSE")
-                    break;
-                }
-                case "START": {
-                    setGameState("RUN")
-                    break;
-                }
-                case "PAUSE":
-                    setGameState("RUN")
-                    break;
-                default:
-                    break;
-            }
-        }
-    })
+    useControls(player, setGameState);
 
     const checkCollission = (topNearRect: Rect, bottomNearRect: Rect) => {
         let collision = false;
@@ -70,7 +40,7 @@ const Game = () => {
 
     const update = useCallback((ctx: CanvasRenderingContext2D, frameCount: number) => {
         let gameState = gameModel.gameState;
-        
+
         if (gameState == "START") {
             ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
             player.init();
@@ -105,16 +75,14 @@ const Game = () => {
         setGameState("RUN");
     }
 
+    console.log("update", gameState)
+
     return <>
 
         <Canvas update={update} />
-        {gameState == "PAUSE" &&
-            <Button variant="contained" size="large" onClick={handlePause}>pause</Button>
+        {(gameState == "START" || gameState == "PAUSE") &&
+            <Button variant="contained" size="large" onClick={handlePause}>{gameState == "PAUSE" ? "pause" : "Start"} </Button>
         }
-        {gameState == "START" &&
-            <Button variant="contained" size="large" onClick={handlePause}>Start</Button>
-        }
-
     </>
 };
 
